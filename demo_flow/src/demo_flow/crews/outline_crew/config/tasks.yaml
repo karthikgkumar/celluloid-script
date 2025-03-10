@@ -1,0 +1,28 @@
+outline_creation_task:
+  description: >
+    Create a comprehensive outline for a screenplay based on provided details abstract: {abstract}, 
+    main character profiles: {main_character_profiles}, side_character_profiles: {side_character_profiles} and genre: {genre}, following classical dramatic structure
+    with clear setup, confrontation and resolution phases. The outline should include all scenes in sequential order
+    with proper scene headings (INT/EXT. LOCATION TIME OF DAY).
+  expected_output: >
+    A structured outline containing minimum 10 scenes organized into :
+    - Opening scenes establishing world and characters
+    - Key setup scenes with proper scene headings  
+    - Confrontation scenes showing escalating conflict
+    - Mid-point scenes with major plot developments
+    - Resolution scenes bringing story threads together
+    - Final scenes with dramatic payoff
+  agent: outliner
+
+outliner_task:
+  description: >
+    Based on the outline, organize and structure the screenplay scenes while maintaining proper 
+    formatting and dramatic flow. Consider the logline: {logline}, central message: {central_message}, 
+    and genre: {genre} requirements.
+  expected_output: >
+    A properly formatted scene breakdown with:
+    - Scene headings (INT/EXT. LOCATION TIME OF DAY)
+    - Sequential ordering of scenes
+    - Clear dramatic progression
+    - Proper integration of characters and plot points
+  agent: outliner

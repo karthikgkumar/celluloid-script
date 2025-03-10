@@ -1,0 +1,52 @@
+#tasks.yaml
+
+scene_development_task:
+  description: >
+    Craft a scene with title: {chapter_title} and description for the scene: {chapter_description} while considering:
+    - Abstract: {abstract}
+    - Logline: {logline} 
+    - Central message: {central_message}
+    - Genre: {genre} adherence
+    - Scene formatting (INT/EXT. LOCATION TIME OF DAY)
+    - Action lines in present tense with visual focus
+    - Scene transitions (FADE IN, CUT TO, etc.)
+  expected_output: >
+    Complete scene with properly formatted setting, action descriptions, and scene transitions
+    that establish the story world while maintaining industry-standard formatting
+  agent: scene_architect
+
+dialogue_development_task:
+  description: >
+    Develop character dialogue based on the scene from scene_architect considering:
+    - Main character profiles: {main_character_profiles}
+    - Side character profiles: {side_character_profiles}
+    - Scene title: {chapter_title}
+    - Scene description: {chapter_description}
+    - Abstract: {abstract}
+    - Logline: {logline}
+    - Central message: {central_message}
+    - Character name capitalization
+    - Parentheticals for delivery context
+    - Off-screen (O.S.) and voiceover (V.O.) notation
+  expected_output: >
+    Scene-specific dialogue with industry-standard formatting that reveals character voices
+    while advancing the plot
+  agent: dialogue_architect
+
+format_task:
+  description: >
+    Format and finalize the script from dialogue_specialist ensuring:
+    - Consistent margins (1½-inch left, 1-inch right/top/bottom)
+    - Courier New 12-point font
+    - Proper page numbering
+    - Overall formatting consistency
+
+    Each scene should should contain around 3,000 words.
+    Important notes:
+    - The scene you are writing needs to fit in well with the rest of the scenes in the script.
+
+    Here is the outline of the entire script:\n\n
+    {book_outline}
+  expected_output: >
+    Production-ready scene of around 3,000 words that covers the provided scene title and outline description with professional and consistent formatting throughout.
+  agent: format_manager
