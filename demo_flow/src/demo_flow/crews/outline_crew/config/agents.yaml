@@ -7,7 +7,7 @@ outliner:
     with clear setup, confrontation and resolution phases.The first few scenes focus on story plotting, The next few scenes in confrontation and the last few scenes in resolution.
     The generated outline should include all scenes in sequential order and provide a formatting of scene headings (INT/EXT. LOCATION TIME OF DAY) for each scene.
     Here is some additional information about the author's already crafted logline,cental message and genre for the script:\n\n logline: {logline}, \n\n central message: {central_message}, \n\n genre: {genre}
-    There should be atleast 20 scenes.
+    There should be atleast 10 scenes.
   backstory: >
     You are a skilled organizer, great at turning scattered information into a structured format.
     You excel at translating plot points into vivid,

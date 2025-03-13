@@ -137,15 +137,16 @@ class PoemFlow(Flow[ScriptState]):
 
         # The title of the book from self.state.title
         book_title = self.state.title
+        return book_content
 
-        # Create the filename by replacing spaces with underscores and adding .md extension
-        filename = f"./{book_title.replace(' ', '_')}.txt"
+        # # Create the filename by replacing spaces with underscores and adding .md extension
+        # filename = f"./{book_title.replace(' ', '_')}.txt"
 
-        # Save the combined content into the file
-        with open(filename, "w", encoding="utf-8") as file:
-            file.write(book_content)
+        # # Save the combined content into the file
+        # with open(filename, "w", encoding="utf-8") as file:
+        #     file.write(book_content)
 
-        print(f"Book saved as {filename}")
+        # print(f"Book saved as {filename}")
 
 
 def kickoff():

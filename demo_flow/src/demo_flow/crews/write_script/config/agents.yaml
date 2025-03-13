@@ -33,7 +33,7 @@ format_manager:
   goal: >
     Ensure consistent formatting throughout the script from dialogue_specialist, including proper margins (1½-inch left, 1-inch right/top/bottom),
     Courier New 12-point font, and correct page numbering.
-    The scene should contain around 3,000 words.
+    The scene should contain around 1,000 words.
   backstory: >
     You are an Expert in maintaining consistency in both content and professional screenplay formatting standards.
 
