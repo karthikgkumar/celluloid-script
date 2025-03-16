@@ -4,7 +4,8 @@ from typing import Optional
 import subprocess
 import json
 import base64
-
+import os
+import tempfile
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -29,12 +30,15 @@ class ScriptRequest(BaseModel):
     main_character_profiles: str 
     supporting_charcter_profiles: str 
     abstract: str
-
     # Your field validators remain the same...
 
 @app.post("/script-agent/")
 async def generate_script(request: ScriptRequest):
     try:
+        # Create a safe filename
+        safe_filename = request.title.replace(' ', '_').replace('/', '_').replace('\\', '_')
+        output_file = f"{safe_filename}_script.txt"
+        
         # Prepare the data as JSON
         script_data = {
             "title": request.title,
@@ -46,11 +50,10 @@ async def generate_script(request: ScriptRequest):
             "abstract": request.abstract
         }
         
-        # Encode the data to prevent issues with special characters
-        script_data_json = json.dumps(script_data)
-        encoded_data = base64.b64encode(script_data_json.encode()).decode()
+        # Encode the data to base64 to avoid command line issues
+        encoded_data = base64.b64encode(json.dumps(script_data).encode()).decode()
         
-        # Build a Python command that sets each attribute individually
+        # Construct the Python command directly
         python_code = (
             "import json, base64;"
             "from src.demo_flow.main import PoemFlow;"
@@ -69,35 +72,33 @@ async def generate_script(request: ScriptRequest):
             "pf.state.book_outline = [];"
             # Run the flow
             "result = pf.kickoff();"
-            "print(result if isinstance(result, str) else json.dumps(result))"
+            f"with open('{output_file}', 'w', encoding='utf-8') as f: f.write(result);"
+            f"print('Script saved to {output_file}')"
         )
-
+        
         # Run the command
         proc = subprocess.run(
             ["python", "-c", python_code],
             capture_output=True,
             text=True
         )
-
+        
         if proc.returncode != 0:
-            raise Exception(proc.stderr)
+            error_message = proc.stderr
+            raise Exception(f"Script generation failed: {error_message}")
         
-        # Get the result
-        output = proc.stdout
+        # Check if the file exists
+        if not os.path.exists(output_file):
+            raise Exception(f"File {output_file} was not created. Process output: {proc.stdout}")
         
-        # Try to parse as JSON if possible
-        try:
-            result = json.loads(output)
-            script_content = result.get('content', output)
-        except json.JSONDecodeError:
-            script_content = output
+        # Read the file content
+        with open(output_file, 'r', encoding='utf-8') as f:
+            script_content = f.read()
         
-        filename = f"{request.title.replace(' ', '_')}_script.txt"
-
         return Response(
             content=script_content,
             media_type="text/plain",
-            headers={"Content-Disposition": f"attachment; filename={filename}"}
+            headers={"Content-Disposition": f"attachment; filename={output_file}"}
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
