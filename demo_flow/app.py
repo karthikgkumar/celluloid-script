@@ -5,10 +5,20 @@ import subprocess
 import json
 import base64
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(
     title="Script Generator API",
     description="API for generating movie loglines from abstracts",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change this to specific origins in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class ScriptRequest(BaseModel):
