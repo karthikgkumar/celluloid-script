@@ -53,34 +53,37 @@ async def generate_script(request: ScriptRequest):
         # Encode the data to base64 to avoid command line issues
         encoded_data = base64.b64encode(json.dumps(script_data).encode()).decode()
         
-        # Construct the Python command directly
-        python_code = (
-            "import json, base64;"
-            "from src.demo_flow.main import PoemFlow;"
-            f"data = json.loads(base64.b64decode('{encoded_data}').decode());"
-            "pf = PoemFlow();"
-            # Set each attribute individually
-            "pf.state.title = data['title'];"
-            "pf.state.genre = data['genre'];"
-            "pf.state.logline = data['logline'];"
-            "pf.state.central_message = data['central_message'];"
-            "pf.state.main_character_profiles = data['main_character_profiles'];"
-            "pf.state.supporting_charcter_profiles = data['supporting_charcter_profiles'];"
-            "pf.state.abstract = data['abstract'];"
-            # Initialize empty lists
-            "pf.state.book = [];"
-            "pf.state.book_outline = [];"
-            # Run the flow
-            "result = pf.kickoff();"
-            f"with open('{output_file}', 'w', encoding='utf-8') as f: f.write(result);"
-            f"print('Script saved to {output_file}')"
-        )
+        # Construct the Python code
+        python_code = f"""
+import json, base64, sys, os
+from src.demo_flow.main import PoemFlow
+data = json.loads(base64.b64decode('{encoded_data}').decode())
+pf = PoemFlow()
+pf.state.title = data['title']
+pf.state.genre = data['genre']
+pf.state.logline = data['logline']
+pf.state.central_message = data['central_message']
+pf.state.main_character_profiles = data['main_character_profiles']
+pf.state.supporting_charcter_profiles = data['supporting_charcter_profiles']
+pf.state.abstract = data['abstract']
+pf.state.book = []
+pf.state.book_outline = []
+result = pf.kickoff()
+with open('{output_file}', 'w', encoding='utf-8') as f:
+    f.write(result)
+print('Script saved to {output_file}')
+"""
         
-        # Run the command
+        # Set the working directory to the root of the project
+        working_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
+        # Run the Python script with the -c flag
         proc = subprocess.run(
             ["python", "-c", python_code],
             capture_output=True,
-            text=True
+            text=True,
+            env=os.environ.copy(),  # Ensure environment variables are passed
+            # cwd=working_directory  # Set the working directory
         )
         
         if proc.returncode != 0:
