@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, Response, Depends, Security
+from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel, field_validator
 from typing import Optional
 import subprocess
@@ -7,6 +8,18 @@ import base64
 import os
 import tempfile
 from fastapi.middleware.cors import CORSMiddleware
+
+from dotenv import load_dotenv
+load_dotenv()
+
+apiKey = os.getenv('SECURE')
+API_KEY_NAME ='X-API-Key'
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+
+def verify_api_key(api_key: str = Security(api_key_header)):
+    if api_key != apiKey:
+        raise HTTPException(status_code=403, detail="Invalid API Key")
+    return api_key
 
 app = FastAPI(
     title="Script Generator API",
@@ -33,7 +46,7 @@ class ScriptRequest(BaseModel):
     # Your field validators remain the same...
 
 @app.post("/script-agent/")
-async def generate_script(request: ScriptRequest):
+async def generate_script(request: ScriptRequest,api_key : str = Depends(verify_api_key) ):
     try:
         # Create a safe filename
         safe_filename = request.title.replace(' ', '_').replace('/', '_').replace('\\', '_')
